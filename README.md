@@ -35,8 +35,15 @@ When caching analytics data, a sudden cache expiration (Cache Miss) under heavy 
 2. Configure environment variables in `.env`:
    ```env
    PORT=3000
-   DATABASE=postgresql://username:password@localhost:5432/queueflow?sslmode=require
-   REDIS_URL=redis://localhost:6379
+   DATABASE=postgresql://username:password@hostname/dbname?sslmode=require
+   
+   # Upstash HTTP Client Variables
+   UPSTASH_REDIS_REST_URL=https://<your-upstash-url>.upstash.io
+   UPSTASH_REDIS_REST_TOKEN=<your_token_here>
+   
+   # Used by BullMQ and caching directly via TCP
+   REDIS_URL=rediss://default:<your_token_here>@<your-upstash-url>.upstash.io:6379
+   
    LOG_LEVEL=info
    ```
 

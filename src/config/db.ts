@@ -11,7 +11,7 @@ if (!connectionString) {
 }
 
 const dbUrl = connectionString.replace(/^'|'$/g, "");
-const client = postgres(dbUrl, { prepare: false });
+export const client = postgres(dbUrl, { prepare: false });
 export const db = drizzle(client);
 
 export const connectDB = async () => {

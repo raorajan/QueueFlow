@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: QueueFlow API
+  version: 1.0.0
+  description: Production-ready API for ingesting and processing transactions securely with BullMQ and Redis caching.
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+paths:
+  /api/v1/transactions:
+    post:
+      summary: Submit a transaction
+      description: Validates payload and pushes it into the BullMQ background processing queue.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionPayload'
+      responses:
+        '200':
+          description: Transaction successfully queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Transaction queued successfully
+        '400':
+          description: Validation error
+        '429':
+          description: Rate limit exceeded
+  /api/v1/analytics/summary:
+    get:
+      summary: Get analytics summary
+      description: Retrieves total transaction volume and the top 5 users by volume. Fetches from Redis cache if available to prevent cache stampedes.
+      responses:
+        '200':
+          description: Analytics summary retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSummary'
+        '429':
+          description: Rate limit exceeded
+        '503':
+          description: Service unavailable (Cache Stampede protection active)
+components:
+  schemas:
+    TransactionPayload:
+      type: object
+      required:
+        - id
+        - userId
+        - amount
+        - currency
+        - timestamp
+      properties:
+        id:
+          type: string
+          description: Unique transaction ID
+          example: txn_101
+        userId:
+          type: string
+          format: uuid
+          description: UUID of the user making the transaction
+          example: 550e8400-e29b-41d4-a716-446655440000
+        amount:
+          type: number
+          description: Positive transaction amount
+          example: 250
+        currency:
+          type: string
+          description: Currency code
+          example: USD
+        timestamp:
+          type: string
+          format: date-time
+          description: Valid ISO timestamp
+          example: "2026-06-19T10:00:00Z"
+    AnalyticsSummary:
+      type: object
+      properties:
+        totalVolume:
+          type: number
+          example: 250000
+        topUsers:
+          type: array
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+                format: uuid
+                example: 550e8400-e29b-41d4-a716-446655440000
+              volume:
+                type: number
+                example: 50000

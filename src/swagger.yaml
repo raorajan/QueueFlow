@@ -4,6 +4,8 @@ info:
   version: 1.0.0
   description: Production-ready API for ingesting and processing transactions securely with BullMQ and Redis caching.
 servers:
+  - url: https://queueflow-pmbc.onrender.com/
+    description: Production server
   - url: http://localhost:3000
     description: Local development server
 paths:

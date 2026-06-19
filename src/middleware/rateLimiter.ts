@@ -4,8 +4,8 @@ import redis from "../config/redis";
 import logger from "../utils/logger";
 
 export const apiRateLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 100, // Limit each IP to 100 requests per minute
+  windowMs: 60 * 1000, 
+  max: 100, 
   standardHeaders: true, 
   legacyHeaders: false,
   store: new RedisStore({

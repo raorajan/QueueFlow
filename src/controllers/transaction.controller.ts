@@ -51,7 +51,9 @@ export const getAnalyticsSummary = async (req: Request, res: Response, next: Nex
     }
 
     try {
-      logger.info("Lock acquired: Fetching analytics from Database");
+      logger.info("Lock acquired: Fetching analytics from Database (Simulating slow query...)");
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       const totalVolumeResult = await db
         .select({ total: sum(transactions.amount) })
